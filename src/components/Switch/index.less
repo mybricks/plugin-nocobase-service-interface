@@ -1,0 +1,67 @@
+@import '../../theme.less';
+
+.ct {
+  display: flex;
+  align-items: center;
+
+  label {
+    width: 75px;
+    text-align: right;
+    padding-right: 5px;
+    font-size: 12px;
+
+    i {
+      font-style: normal;
+      color: #FF0000;
+    }
+  }
+
+  .switch {
+    display: inline-block;
+    box-sizing: border-box;
+    position: relative;
+    padding-left: 6px;
+    background-color: rgba(0, 0, 0, 0.25);
+    border: 0;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 28px;
+    height: 16px;
+    line-height: 16px;
+    margin: 0;
+    padding: 0;
+    color: rgba(0, 0, 0, 0.85);
+    transition: all .2s;
+
+    &.checked {
+      background-color: @color-manatee-primary;
+
+      .handle {
+        left: initial;
+        right: 2px;
+      }
+    }
+
+    .handle {
+      width: 12px;
+      height: 12px;
+      position: absolute;
+      transition: all 0.2s ease-in-out;
+      top: 2px;
+      left: 2px;
+
+      &::before {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: #fff;
+        border-radius: 9px;
+        box-shadow: 0 2px 4px 0 rgb(0 35 11 / 20%);
+        content: '';
+      }
+    }
+  }
+}

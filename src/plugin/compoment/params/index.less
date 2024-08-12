@@ -1,0 +1,162 @@
+@import '../../../theme.less';
+
+.item,
+.header {
+  display: flex;
+  font-size: 12px;
+
+  .column {
+    text-align: center;
+    width: 78px;
+  }
+
+  .fileName {
+    text-align: center;
+    width: 78px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
+  }
+
+
+  p {
+    margin-bottom: 0;
+  }
+}
+
+.content {
+  display: flex;
+  margin-left: -30px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+  position: relative;
+
+  &::before {
+    position: absolute;
+    left: -14px;
+    width: 12px;
+    top: 10px;
+    border-bottom: 1px solid #aaa;
+    content: '';
+  }
+
+  .label {
+    text-align: right;
+    padding: 0 5px;
+    color: #777;
+  }
+
+  .type {
+    width: 30px;
+    text-align: left;
+    padding-right: 5px;
+  }
+
+  input {
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background: #fff;
+    padding: 5px;
+    line-height: 1;
+    text-align: left !important;
+
+    &:focus {
+      outline: 1px solid @color-manatee-primary;
+    }
+  }
+
+  input[disabled] {
+    color: rgba(0, 0, 0, 0.25);
+    background-color: #f5f5f5;
+    border-color: #d9d9d9;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+
+  .iconRemove {
+    cursor: pointer;
+  }
+
+  .iconAdder {
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: normal;
+    color: #555;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 3px;
+    margin-left: 5px;
+    margin-bottom: 3px;
+
+    &:hover {
+      color: rgb(255, 255, 255);
+      background-color: #fa6400;
+    }
+  }
+}
+
+.rootItem {
+  &::before {
+    display: none;
+  }
+}
+
+.ct {
+  position: relative;
+  width: 100%;
+  margin-left: 12px;
+  padding: 0 5px 0 15px;
+
+  &::before {
+    position: absolute;
+    left: 0;
+    top: -2px;
+    bottom: -2px;
+    border-left: 1px solid #aaa;
+    content: '';
+  }
+
+  &:first-child {
+    &::before {
+      display: none;
+    }
+  }
+
+  &:last-child {
+    &::before {
+      height: 13px;
+    }
+  }
+}
+
+.list {
+  margin-left: -12px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.typeName {
+  font-style: italic;
+  color: #777;
+  padding-left: 3px;
+}
+
+.debug {
+  border-top: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

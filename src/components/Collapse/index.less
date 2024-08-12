@@ -1,0 +1,29 @@
+@import '../../theme.less';
+
+.collapse {
+  position: relative;
+  font-size: 12px;
+  height: auto;
+  .header {
+    display: flex;
+    height: 30px;
+    align-items: center;
+    cursor: pointer;
+
+    svg {
+      max-width: 10px;
+    }
+    .icon {
+      display: flex;
+      align-items: center;
+      margin-right: 6px;
+      transform: rotate(90deg);
+    }
+    .fold {
+      transform: rotate(0);
+    }
+  }
+  .content {
+    height: 100%;
+  }
+}

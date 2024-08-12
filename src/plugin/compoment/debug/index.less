@@ -1,0 +1,49 @@
+.title {
+  font-size: 12px;
+  padding: 4px;
+  margin-top: -20px;
+}
+
+.formItem {
+  label {
+    width: 75px;
+    text-align: right;
+    padding-right: 5px;
+    font-size: 12px;
+  }
+}
+
+.paramEditContainer {
+  position: relative;
+
+  .codeText {
+    width: calc(100% - 12px);
+    padding: 5px;
+    border: 1px solid #CCC;
+    border-radius: 3px;
+    overflow: auto;
+    resize: vertical;
+  }
+
+  .codeIcon {
+    position: absolute;
+    right: 10px;
+    top: -26px;
+    cursor: pointer;
+    width: 40px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+
+    &.focus,
+    &:hover {
+      background-color: #AAA;
+
+      svg {
+        fill: #FFFFFF;
+      }
+    }
+  }
+}

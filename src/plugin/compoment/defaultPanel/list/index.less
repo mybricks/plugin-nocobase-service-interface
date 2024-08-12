@@ -1,0 +1,25 @@
+.right {
+  overflow: auto;
+  transition: width 300ms;
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+  position: absolute;
+  top: 40px;
+  left: 920px;
+  bottom: 25px;
+  z-index: 1000;
+
+  .sqBtn {
+    position: sticky;
+    top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    z-index: 2;
+  }
+}
+
+.right.expand {
+  width: 560px;
+}

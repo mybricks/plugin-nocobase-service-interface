@@ -1,0 +1,28 @@
+.edt {
+  display: flex;
+  flex-direction: row;
+  //border: 1px solid #DDD;
+  border-radius: 3px;
+  overflow: hidden;
+
+  .opt {
+    padding: 3px 8px;
+    font-size: 12px;
+    background: #FFF;
+    cursor: pointer;
+    border: 1px solid #DDD;
+    display: flex;
+    align-items: center;
+  }
+
+  .opt:not(:last-child) {
+    border-right: 1px solid #DDD;
+  }
+
+  .selected {
+    background: #616C81;
+    color: #FFF;
+    font-weight: bold;
+    margin: -1px;
+  }
+}

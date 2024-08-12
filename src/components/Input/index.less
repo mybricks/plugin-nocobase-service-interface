@@ -1,0 +1,47 @@
+@import '../../theme.less';
+
+.input {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 12px;
+
+  label {
+    width: 75px;
+    text-align: right;
+    padding-right: 5px;
+    font-size: 12px;
+
+    i {
+      font-style: normal;
+      color: #FF0000;
+    }
+  }
+
+  .editor {
+    flex: 1;
+    display: flex;
+    position: relative;
+  }
+
+  .textEdt {
+
+    input,
+    textarea {
+      border: 1px solid #DDD;
+      border-radius: 3px;
+      padding: 5px;
+      background: #FFF;
+      width: 100%;
+      line-height: 1;
+
+      &:focus {
+        outline: 1px solid @color-manatee-primary;
+      }
+    }
+
+    textarea {
+      min-height: 50px;
+    }
+  }
+}
