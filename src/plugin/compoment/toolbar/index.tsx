@@ -20,7 +20,7 @@ export default function ({ ctx, setRender, blurMap }: any) {
   const renderAddActionList = () => {
     if (!ctx.addActions || ctx.addActions.length === 1) {
       return (
-        <div className={css.icon} onClick={() => onAddClick("http-manatee")}>
+        <div data-mybricks-tip="添加接口" className={css.icon} onClick={() => onAddClick("http-manatee")}>
           {plus}
         </div>
       )

@@ -6,6 +6,7 @@ import Button from "../../../components/Button"
 import Collapse from "../../../components/Collapse"
 import { CDN } from "../../../constant"
 import curCss from "./index.less"
+import dCss from "../defaultPanel/index.less";
 
 export default function GlobalPanel({
   closeTemplateForm,
@@ -31,6 +32,35 @@ export default function GlobalPanel({
             </Button>
           </div>
         </div>
+      </div>
+      <div className={curCss.item}>
+        <Collapse header="nocobase" defaultFold={false}>
+          <div className={dCss.item}>
+            <label>域名</label>
+            <div className={`${dCss.editor} ${dCss.textEdt}`}>
+              <input
+                type={"text"}
+                placeholder={"nocobase服务域名"}
+                defaultValue={data.config.nocobase.url}
+                onChange={(e) => {
+                  data.config.nocobase.url = e.target.value
+                }}
+              />
+            </div>
+          </div>
+          <div className={dCss.item} style={{ display: "flex", alignItems: "flex-start" }}>
+            <label>鉴权token</label>
+            <div className={`${dCss.editor} ${dCss.textEdt}`}>
+              <textarea
+                placeholder={"鉴权token，仅用于搭建调试态"}
+                defaultValue={data.config.nocobase.token}
+                onChange={(e) => {
+                  data.config.nocobase.token = e.target.value
+                }}
+              />
+            </div>
+          </div>
+        </Collapse>
       </div>
       <div className={curCss.item}>
         <Collapse header="当开始请求">
@@ -93,6 +123,7 @@ export default function GlobalPanel({
         </div>
       ) : null}
     </div>,
-    document.querySelector('div[data-id=manatee-plugin-root-panel]') as HTMLElement
+    // document.querySelector('div[data-id=manatee-plugin-root-panel]') as HTMLElement
+    document.body
   )
 }

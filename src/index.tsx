@@ -28,8 +28,8 @@ export default function pluginEntry(pluginConfig: any = {}) {
   return {
     name: PLUGIN_CONNECTOR_NAME,
     namespace: PLUGIN_CONNECTOR_NAME,
-    title: "接口列表",
-    description: "海牛接口列表连接器",
+    title: "nocobase接口列表",
+    description: "nocobase接口列表连接器",
     data,
     onLoad: ({ data }) => {
       if (!data) {
@@ -49,6 +49,10 @@ export default function pluginEntry(pluginConfig: any = {}) {
           pluginConfig?.initialValue?.paramsFn ||
           encodeURIComponent(exampleParamsFunc),
         resultFn: pluginConfig?.initialValue?.resultFn || templateResultFunc,
+        nocobase: {
+          url: "",
+          token: ""
+        }
       }
       data.config.resultFn =
         data.config.resultFn ||
@@ -102,7 +106,10 @@ export default function pluginEntry(pluginConfig: any = {}) {
         return call(
           { useProxy: true, ...connector, ...curConnector },
           params,
-          config
+          config,
+          {
+            Authorization: `Bearer ${this.data.config.nocobase.token}`,
+          }
         )
       } else {
         return Promise.reject("找不到对应连接器 Script 执行脚本.")
@@ -190,7 +197,7 @@ export default function pluginEntry(pluginConfig: any = {}) {
     contributes: {
       sliderView: {
         tab: {
-          title: "接口列表",
+          title: "nocobase接口列表",
           icon: icon,
           apiSet: ["connector"],
           render(args: any) {

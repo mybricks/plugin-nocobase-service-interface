@@ -1,1 +1,1 @@
-# Mybricks 插件-海牛接口列表连接器-@mybricks/plugins/service-interface
+# Mybricks 插件-nocobase接口列表连接器

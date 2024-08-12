@@ -14,7 +14,8 @@ import { DefaultPanelContext } from "./context"
 
 import parentCss from "../../../style-cssModules.less"
 import css from "./index.less"
-import List from "./list"
+import List from "./list/index2"
+// import List from "./list/index"
 
 const methodOpts = [
   { title: "GET", value: "GET" },
@@ -152,14 +153,14 @@ export default function DefaultPanel({
                 <Button type="primary" onClick={openRight} size="small">
                   选择接口
                 </Button>
-                <div className={css.item}>
+                {/* <div className={css.item}>
                   <label>所属项目</label>
                   <span>{sidebarContext.formModel?.javaProjectName}</span>
-                </div>
+                </div> */}
                 <div className={css.item}>
                   <label>接口名称</label>
-                  <span>{sidebarContext.formModel?.title}</span>
-                  {/* <div
+                  {/* <span>{sidebarContext.formModel?.title}</span> */}
+                  <div
                     className={`${css.editor} ${css.textEdt} ${
                       sidebarContext.titleErr ? css.error : ""
                     }`}
@@ -175,7 +176,7 @@ export default function DefaultPanel({
                         sidebarContext.formModel.title = e.target.value
                       }}
                     />
-                  </div> */}
+                  </div>
                 </div>
                 <div
                   className={css.item}
@@ -381,6 +382,7 @@ export default function DefaultPanel({
             closeRight={closeRight}
             projectNode={projectNode}
             sidebarContext={sidebarContext}
+            globalConfig={globalConfig}
           />
         )}
       </DefaultPanelContext.Provider>

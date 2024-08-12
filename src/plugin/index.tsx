@@ -567,7 +567,7 @@ export default function Sidebar({
                     onChange={onChangeGlobalMock}
                   />
                 </div>
-                <div className={css.icon} onClick={onGlobalConfigClick}>
+                <div data-mybricks-tip="全局配置" className={css.icon} onClick={onGlobalConfigClick}>
                   {Icons.set}
                 </div>
               </div>

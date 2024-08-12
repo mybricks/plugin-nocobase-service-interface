@@ -306,7 +306,8 @@ export function call(
     [key: string]: any
   },
   params: any,
-  config?: IConfig
+  config?: IConfig,
+  headers?: any
 ) {
   return new Promise((resolve, reject) => {
     try {
@@ -336,6 +337,7 @@ export function call(
                 ...opts,
                 url: "/paas/api/proxy",
                 headers: {
+                  ...(headers || {}),
                   ...(opts.headers || {}),
                   ["x-target-url"]: opts.url,
                 },

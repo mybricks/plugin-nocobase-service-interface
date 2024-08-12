@@ -22,7 +22,7 @@ module.exports = merge(commonCfg, {
     filename: `[name].${version}.js`,
     path: resolve(process.cwd(), "runtime"),
     libraryTarget: "umd",
-    library: "@manatee/service-interface",
+    library: "@mybricks/nocobase-service-interface",
   },
   externals: [
     {
@@ -31,8 +31,8 @@ module.exports = merge(commonCfg, {
     },
   ],
   plugins: [
-    new BundleAnalyzerPlugin({
-      analyzerMode: "static",
-    }),
+    // new BundleAnalyzerPlugin({
+    //   analyzerMode: "static",
+    // }),
   ],
 })

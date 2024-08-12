@@ -1,4 +1,4 @@
-export const PLUGIN_CONNECTOR_NAME = "@manatee/service-interface"
+export const PLUGIN_CONNECTOR_NAME = "@mybricks/nocobase-service-interface"
 
 export const exampleParamsFunc = `export default function ({ params, data, headers, url, method }) {
   // 设置请求query、请求体、请求头

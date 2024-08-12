@@ -148,13 +148,17 @@ export default ({
     (key, info) => {
       if (info?.node?.extra?.id > 0) {
         nodeChange(info.node.extra)
+        console.log('info.node.extra: ', info.node.extra)
         sidebarContext.formModel.title = info.node.extra.moduleName
         sidebarContext.formModel.method = info.node.extra.requestMode
         sidebarContext.formModel.desc = info.node.extra.moduleDescription
         sidebarContext.formModel.doc = location.origin + info.node.extra.docUrl
         sidebarContext.formModel.params.children = []
         sidebarContext.formModel.input = encodeURIComponent(exampleParamsFunc)
+
+        console.log("sidebarContext.formModel: ", sidebarContext.formModel)
         if (!!info.node.extra.params) {
+          console.log("info.node.extra.params: ", info.node.extra.params)
           // const {
           //   usedGetHeaders = [],
           //   usedPostHeaders = [],
