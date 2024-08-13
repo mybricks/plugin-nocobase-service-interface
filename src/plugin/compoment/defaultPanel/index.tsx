@@ -150,9 +150,9 @@ export default function DefaultPanel({
           <>
             <div className={css.ct}>
               <Collapse header="基本信息" defaultFold={false}>
-                <Button type="primary" onClick={openRight} size="small">
+                {/* <Button type="primary" onClick={openRight} size="small">
                   选择接口
-                </Button>
+                </Button> */}
                 {/* <div className={css.item}>
                   <label>所属项目</label>
                   <span>{sidebarContext.formModel?.javaProjectName}</span>

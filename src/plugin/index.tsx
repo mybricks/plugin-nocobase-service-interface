@@ -16,6 +16,7 @@ import * as Icons from "../icon"
 import GlobalPanel from "./compoment/globalPanel"
 import { getScript } from "../script"
 import Switch from "../../src/components/Switch"
+import NocobaseInterfacePanel from "./compoment/nocobaseInterfacePanel";
 
 interface Iprops {
   connector: Iconnector
@@ -423,6 +424,37 @@ export default function Sidebar({
           key={sidebarContext.type}
           globalConfig={data.config}
           style={{ top: ref.current?.getBoundingClientRect().top }}
+        />
+      )
+    } else if (sidebarContext.type === "add") {
+      sidebarContext.formModel = {
+        title: "",
+        type: SERVICE_TYPE.HTTP,
+        path: "",
+        desc: "",
+        method: "GET",
+        useMock: false,
+        input: encodeURIComponent(exampleParamsFunc),
+        output: encodeURIComponent(exampleResultFunc),
+      }
+      // 添加接口，打开nocobase接口选择面板
+      node = (
+        <NocobaseInterfacePanel
+          closeRight={() => {
+            sidebarContext.type = ""
+            sidebarContext.isDebug = false
+            sidebarContext.activeId = void 0
+            sidebarContext.isEdit = false
+            setRender(sidebarContext)
+          }}
+          nodeChange={(e) => {
+            console.log("nodeChange: ", e)
+          }}
+          sidebarContext={sidebarContext}
+          globalConfig={data.config}
+          style={{ top: ref.current?.getBoundingClientRect().top }}
+          setRender={setRender}
+          onSubmit={onFinish}
         />
       )
     }
