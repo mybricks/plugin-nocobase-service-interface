@@ -553,7 +553,7 @@ export default function Sidebar({
         <div className={`${css["manatee-sidebar-panel-view"]}`}>
           <div className={css["manatee-sidebar-panel-header"]}>
             <div className={css["manatee-sidebar-panel-header__title"]}>
-              <span>服务连接</span>
+              <span>NocoBase服务</span>
               <div className={css.rightOperate}>
                 <div
                   className={css.globalMock}
