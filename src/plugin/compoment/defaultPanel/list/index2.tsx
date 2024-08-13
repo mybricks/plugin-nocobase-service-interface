@@ -1,51 +1,26 @@
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useState, useEffect } from "react"
 import css from "./index.less"
-import { Select, Tree, message, Input } from "antd"
-import { DoubleLeftOutlined, LoadingOutlined, SearchOutlined } from "@ant-design/icons"
+import { Select, message } from "antd"
+import { DoubleLeftOutlined } from "@ant-design/icons"
 import { createPortal } from "react-dom"
 import axios from "axios";
-import { axiosPostInterfaceList, axiosPostProjectList } from "../api"
-import { ApiFolder, isApiFolder, isApiItem } from "../api/tools"
-import { letterCompare, textSearchWithPinyin, uuid } from "../../../../utils"
 import { exampleParamsFunc } from "../../../../constant"
 import Collapse from "../../../../components/Collapse"
 import Button from "../../../../components/Button"
-type TreeItem = {
-  title: string
-  key: string
-  isLeaf: boolean
-  children?: TreeItem[]
-  extra?: any
-}
-const { DirectoryTree } = Tree
-// import {
-//   getApiList,
-//   getProjectList,
-//   isApiFolder,
-//   isApiItem,
-//   type ApiItem,
-//   type ApiFolder,
-// } from "../apiData/index"
 
 export default ({
   isRightExpand,
   closeRight,
   nodeChange,
-  projectNode,
-  projectNodeChange,
   sidebarContext,
   globalConfig,
 }) => {
   const [projectList, setProjectListFn] = useState([])
   const [projectId, setProjectIdFn] = useState(null)
   const [interfaceList, setInterfaceList] = useState([])
-  const [treeData, setTreeDataFn] = useState([])
-  const [loading, setLoadingFn] = useState(true)
-  const [searchText, setSearchText] = useState<string>()
 
   useEffect(() => {
     if (!isRightExpand) return
-    setLoadingFn(true)
     getProjectList()
   }, [isRightExpand])
 
@@ -68,7 +43,7 @@ export default ({
         Object.entries(paths).forEach(([path, config]) => {
           const requestMethod = Object.keys(config)[0];
           const requestConfig = config[requestMethod];
-          const { description, tags, parameters, requestBody, responses } = requestConfig;
+          const { tags } = requestConfig;
           const uppercaseRequestMethod = requestMethod.toUpperCase();
 
           if (tags) {
@@ -159,8 +134,8 @@ export default ({
 
     sidebarContext.formModel.title = interfaceItem.description || interfaceItem.path;
     sidebarContext.formModel.method = interfaceItem.requestMethod;
-    // sidebarContext.formModel.desc = info.node.extra.moduleDescription // 描述
-    // sidebarContext.formModel.doc = location.origin + info.node.extra.docUrl // 文档地址
+    // sidebarContext.formModel.desc = info.node.extra.moduleDescription // TODO: 描述
+    // sidebarContext.formModel.doc = location.origin + info.node.extra.docUrl // TODO: 文档地址
     sidebarContext.formModel.params.children = []
     sidebarContext.formModel.input = encodeURIComponent(exampleParamsFunc)
 
@@ -190,33 +165,10 @@ export default ({
             options={projectList}
             onChange={setProjectIdFn}
           ></Select>
-          {/* <Input 
-            value={searchText}
-            prefix={<SearchOutlined />} 
-            allowClear
-            style={{ width: "80%", marginTop: 8 }}
-            placeholder="搜索接口名称或英文名"
-            onChange={e => handleSearch(e.target.value.trim())}
-          />  */}
         </div>
         <div style={{ marginTop: 24 }}>
           <div style={{ marginBottom: 12 }}>接口列表</div>
           <div>
-            {/* {loading ? (
-              <div
-                className="wd-full ht-full fl-ver"
-                style={{ width: "100%", height: "200px" }}
-              >
-                <LoadingOutlined />
-              </div>
-            ) : (
-              <DirectoryTree
-                onSelect={treeSelected}
-                treeData={treeData}
-                style={{ backgroundColor: "#f7f7f7" }}
-              />
-            )} */}
-
             {interfaceList.map(({ tag, title, interfaceList}) => {
               return (
                 <Collapse header={tag}>
