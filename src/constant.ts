@@ -2,6 +2,16 @@ export const PLUGIN_CONNECTOR_NAME = "@mybricks/nocobase-service-interface"
 
 export const exampleParamsFunc = `export default function ({ params, data, headers, url, method }) {
   // 设置请求query、请求体、请求头
+  const token = localStorage.getItem("NOCOBASE_TOKEN")
+  if (token) {
+    if (headers) {
+      headers.Authorization = \`Bearer \${token}\`;
+    } else {
+      headers = {
+        Authorization: \`Bearer \${token}\`,
+      }
+    }
+  }
   return { params, data, headers, url, method };
  }
 `
