@@ -28,7 +28,8 @@ export default ({
     if (!isRightExpand) return
     if (projectId) {
       const { nocobase } = globalConfig;
-      const url = (process.env.NODE_ENV === "development" ? "" : nocobase.url.replace(/\/$/, "")) + projectId;
+      // const url = (process.env.NODE_ENV === "development" ? "" : nocobase.url.replace(/\/$/, "")) + projectId;
+      const url = nocobase.url.replace(/\/$/, "") + projectId;
 
       axios.get(url, {
         headers: {
@@ -99,7 +100,8 @@ export default ({
   // 获取项目列表
   const getProjectList = async () => {
     const { nocobase } = globalConfig;
-    const url = (process.env.NODE_ENV === "development" ? "" : nocobase.url.replace(/\/$/, "")) + "/api/swagger:getUrls"
+    // const url = (process.env.NODE_ENV === "development" ? "" : nocobase.url.replace(/\/$/, "")) + "/api/swagger:getUrls"
+    const url = nocobase.url.replace(/\/$/, "") + "/api/swagger:getUrls";
 
     try {
       const nocobaseUrls = await axios.get(url, {

@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "Apollo",
   "license": "",
-  "main": "runtime/manatee-plugin.1.10.js",
+  "main": "runtime/plugin.js",
   "scripts": {
     "build": "webpack --config ./scripts/webpack.build.js && cp ./types/** ./runtime",
     "publishToNpm": "npm run build && npm publish --registry=https://registry.npmjs.org --access=public"
@@ -15,6 +15,10 @@
     "runtime",
     "Readme.md"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
   "dependencies": {
     "@mybricks/code-editor": "1.1.7",
     "antd": "^5.7.3",

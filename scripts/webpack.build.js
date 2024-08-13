@@ -14,12 +14,13 @@ const version = JSON.parse(packageJson).version
 module.exports = merge(commonCfg, {
   mode: "production",
   entry: {
-    ["manatee-plugin"]: "./src/index.tsx",
-    ["manatee-index"]: "./src/help/callConnectorHttp.ts",
+    ["plugin"]: "./src/index.tsx",
+    ["index"]: "./src/help/callConnectorHttp.ts",
   },
   output: {
     globalObject: "this",
-    filename: `[name].${version}.js`,
+    // filename: `[name].${version}.js`,
+    filename:"[name].js",
     path: resolve(process.cwd(), "runtime"),
     libraryTarget: "umd",
     library: "@mybricks/nocobase-service-interface",

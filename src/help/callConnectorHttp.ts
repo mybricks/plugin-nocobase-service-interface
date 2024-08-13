@@ -333,12 +333,20 @@ export function call(
               httpRegExp.test(url) &&
               url.match(/^https?:\/\/([^/#&?])+/g)?.[0] !== location.origin
             ) {
+
+              const configHeaders = {
+                ...(opts.headers || {}),
+              }
+
+              if (headers) {
+                Object.assign(configHeaders, headers)
+              }
+
               return axios({
                 ...opts,
                 url: "/paas/api/proxy",
                 headers: {
-                  ...(headers || {}),
-                  ...(opts.headers || {}),
+                  ...configHeaders,
                   ["x-target-url"]: opts.url,
                 },
                 data: opts.data,
@@ -349,6 +357,16 @@ export function call(
                 })
                 .catch((error) => reject(error.response.data?.message || error))
             }
+
+            const axiosConfig = opts || options;
+            if (headers) {
+              if (!axiosConfig.headers) {
+                axiosConfig.headers = headers
+              } else {
+                Object.assign(axiosConfig.headers, headers)
+              }
+            }
+
             return axios(opts || options)
               .then((res) => {
                 config?.onResponseInterception?.(res)
