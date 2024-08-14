@@ -530,6 +530,9 @@ export default function Sidebar({
     data.config.globalMock = globalMock
   }, [])
   useMemo(() => {
+    onChangeGlobalMock(false)
+  }, [])
+  useMemo(() => {
     if (!data) {
       return
     }
@@ -587,7 +590,7 @@ export default function Sidebar({
             <div className={css["manatee-sidebar-panel-header__title"]}>
               <span>NocoBase服务</span>
               <div className={css.rightOperate}>
-                <div
+                {/* <div
                   className={css.globalMock}
                   data-mybricks-tip="开启全局Mock，页面调试时所有接口将默认使用Mock能力"
                 >
@@ -598,7 +601,7 @@ export default function Sidebar({
                     defaultChecked={data?.config?.globalMock}
                     onChange={onChangeGlobalMock}
                   />
-                </div>
+                </div> */}
                 <div data-mybricks-tip="全局配置" className={css.icon} onClick={onGlobalConfigClick}>
                   {Icons.set}
                 </div>
