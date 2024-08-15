@@ -9,6 +9,8 @@ import Collapse from "../../../components/Collapse"
 import Button from "../../../components/Button"
 import DefaultPanel from "../defaultPanel";
 
+const httpRegExp = new RegExp("^(http|https)://")
+
 export default ({
   closeRight,
   nodeChange,
@@ -33,11 +35,24 @@ export default ({
       // const url = (process.env.NODE_ENV === "development" ? "" : nocobase.url.replace(/\/$/, "")) + projectId;
       const url = nocobase.url.replace(/\/$/, "") + projectId;
 
-      axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${nocobase.token}`
-        }
-      }).then((response) => {
+      let promise;
+
+      if (nocobase.useProxy && httpRegExp.test(url) && url.match(/^https?:\/\/([^/#&?])+/g)?.[0] !== location.origin) {
+        promise = axios.get("/paas/api/proxy", {
+          headers: {
+            Authorization: `Bearer ${nocobase.token}`,
+            ["x-target-url"]: url,
+          }
+        })
+      } else {
+        promise = axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${nocobase.token}`
+          }
+        })
+      }
+
+      promise?.then((response) => {
         const tagsMap = {
           default: []
         };
@@ -106,15 +121,28 @@ export default ({
     const url = nocobase.url.replace(/\/$/, "") + "/api/swagger:getUrls";
 
     try {
-      const nocobaseUrls = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${nocobase.token}`
-        }
-      })
+      let nocobaseUrls = [];
+
+      if (nocobase.useProxy && httpRegExp.test(url) && url.match(/^https?:\/\/([^/#&?])+/g)?.[0] !== location.origin) {
+        const response = await axios.get("/paas/api/proxy", {
+          headers: {
+            Authorization: `Bearer ${nocobase.token}`,
+            ["x-target-url"]: url,
+          }
+        })
+        nocobaseUrls = response.data.data;
+      } else {
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${nocobase.token}`
+          }
+        })
+        nocobaseUrls = response.data.data;
+      }
   
       let defaultProjectId = null;
   
-      setProjectListFn(nocobaseUrls.data.data.map(({ name, url }, index) => {
+      setProjectListFn(nocobaseUrls.map(({ name, url }, index) => {
         if (!index) {
           defaultProjectId = url;
         }

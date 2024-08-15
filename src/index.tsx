@@ -51,7 +51,8 @@ export default function pluginEntry(pluginConfig: any = {}) {
         resultFn: pluginConfig?.initialValue?.resultFn || templateResultFunc,
         nocobase: {
           url: "",
-          token: ""
+          token: "",
+          useProxy: true
         }
       }
       data.config.resultFn =

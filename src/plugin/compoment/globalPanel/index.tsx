@@ -4,6 +4,7 @@ import Editor from "@mybricks/code-editor"
 import css from "../../../../src/style-cssModules.less"
 import Button from "../../../components/Button"
 import Collapse from "../../../components/Collapse"
+import Switch from "../../../components/Switch"
 import { CDN } from "../../../constant"
 import curCss from "./index.less"
 import dCss from "../defaultPanel/index.less";
@@ -56,6 +57,23 @@ export default function GlobalPanel({
                 defaultValue={data.config.nocobase.token}
                 onChange={(e) => {
                   data.config.nocobase.token = e.target.value
+                }}
+              />
+            </div>
+          </div>
+          <div className={dCss.item} style={{marginBottom: 0}}>
+            <label></label>
+            <div className={`${dCss.editor} ${dCss.textEdt}`}>
+              <div className={dCss.editorTip}>如果是非本地服务，建议开启代理走后端转发服务</div>
+            </div>
+          </div>
+          <div className={dCss.item} style={{marginTop: 0}}>
+            <label>代理</label>
+            <div className={`${dCss.editor} ${dCss.textEdt}`}>
+              <Switch
+                defaultChecked={data.config.nocobase.useProxy}
+                onChange={(useProxy) => {
+                  data.config.nocobase.useProxy = useProxy;
                 }}
               />
             </div>
