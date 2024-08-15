@@ -148,7 +148,7 @@ export let CDN = {
   paths: {
     vs: "/mfs/editor_assets/monaco-editor/0.33.0/min/vs",
   },
-  monacoLoader: "/mfs/editor_assets/monaco-editor/0.33.0/min/vs/loader.min.js",
+  monacoLoader: "/mfs/editor_assets/monaco-editor/0.33.0/min/vs/loader.js",
 }
 
 export const resetCDN = () => {
