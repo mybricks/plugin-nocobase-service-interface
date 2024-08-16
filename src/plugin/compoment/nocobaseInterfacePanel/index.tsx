@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react"
 import css from "./index.less"
 import { Select, message } from "antd"
-import { DoubleLeftOutlined } from "@ant-design/icons"
 import { createPortal } from "react-dom"
 import axios from "axios";
 import { exampleParamsFunc } from "../../../constant"
@@ -10,6 +9,39 @@ import Button from "../../../components/Button"
 import DefaultPanel from "../defaultPanel";
 
 const httpRegExp = new RegExp("^(http|https)://")
+
+const fetchNocoBaseData = async (nocobase: {
+  url: string;
+  token: string;
+  useProxy: boolean;
+}, config: {
+  pathname: string
+  params?: any;
+  headers?: any;
+}) => {
+  const { url, token, useProxy } = nocobase;
+  const { pathname, params, headers } = config;
+  const fullUrl = url.replace(/\/$/, "") + pathname;
+
+  if (useProxy && httpRegExp.test(url) && url.match(/^https?:\/\/([^/#&?])+/g)?.[0] !== location.origin) {
+    return axios.get("/paas/api/proxy", {
+      headers: {
+        ...headers,
+        Authorization: `Bearer ${token}`,
+        ["x-target-url"]: fullUrl,
+      },
+      params
+    })
+  } else {
+    return axios.get(fullUrl, {
+      headers: {
+        ...headers,
+        Authorization: `Bearer ${token}`
+      },
+      params
+    })
+  }
+}
 
 export default ({
   closeRight,
@@ -20,74 +52,142 @@ export default ({
   onSubmit,
   style,
 }) => {
+  const [appList, setAppList] = useState([{ label: "主应用", value: null }]) // 这里看下，默认这样好像不行
+  const [app, setApp] = useState(null)
   const [projectList, setProjectListFn] = useState([])
   const [projectId, setProjectIdFn] = useState(null)
   const [interfaceList, setInterfaceList] = useState([])
   const [showNocobase, setShowNocobase] = useState(true);
 
+  const getAppList = async (appList = [{ displayName: "主应用", name: null }], headers = null) => {
+    let appListData = []
+
+    try {
+      appListData = (await fetchNocoBaseData(
+        globalConfig.nocobase,
+        {
+          pathname: "/api/applications",
+          params: {
+            pageSize: 100,
+            sort: ['-createdAt'],
+            page: 1,
+          },
+          headers
+        }
+      )).data.data
+    } catch {}
+
+    if (!appListData.length) {
+      return appList
+    } else {
+      await Promise.all(appListData.map(async (app) => {
+        appList.push(app);
+        if (app.status === "running") {
+          await getAppList(appList, {
+            "X-app": app.name
+          })
+        }
+      }))
+
+      return appList
+    }
+  }
+
+  const appCheck = () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await fetchNocoBaseData(
+          globalConfig.nocobase,
+          {
+            pathname: "/api/app:getInfo",
+            params: {
+              pageSize: 100,
+              sort: ['-createdAt'],
+              page: 1,
+            },
+          }
+        )
+        resolve(response)
+      } catch (error) {
+        reject(error)
+      }
+    })
+  }
+
   useEffect(() => {
-    getProjectList()
+    appCheck().then(() => {
+      getAppList().then((appList) => {
+        console.log("appList: ", appList)
+        setAppList(appList.map((app) => {
+          return {
+            label: app.displayName,
+            value: app.name
+          }
+        }))
+      })
+      getProjectList(null)
+    }).catch((error) => {
+      console.error(error);
+      message.warning(`请正确填写nocobase相关配置: ${error.message}`)
+    })
+    
   }, [])
 
-  useEffect(() => {
-    if (projectId) {
-      const { nocobase } = globalConfig;
-      // const url = (process.env.NODE_ENV === "development" ? "" : nocobase.url.replace(/\/$/, "")) + projectId;
-      const url = nocobase.url.replace(/\/$/, "") + projectId;
+  const handleAppChange = (app) => {
+    setApp(app);
+    setProjectIdFn(null)
+    setProjectListFn([])
+    setInterfaceList([])
+    getProjectList(app)
+  }
 
-      let promise;
-
-      if (nocobase.useProxy && httpRegExp.test(url) && url.match(/^https?:\/\/([^/#&?])+/g)?.[0] !== location.origin) {
-        promise = axios.get("/paas/api/proxy", {
-          headers: {
-            Authorization: `Bearer ${nocobase.token}`,
-            ["x-target-url"]: url,
-          }
-        })
-      } else {
-        promise = axios.get(url, {
-          headers: {
-            Authorization: `Bearer ${nocobase.token}`
-          }
-        })
+  const getInterfaceList = (projectId) => {
+    const { nocobase } = globalConfig;
+    fetchNocoBaseData(
+      nocobase,
+      {
+        pathname: projectId,
+        headers: app ? {
+          "X-app": app
+        } : null
       }
+    ).then((response) => {
+      const tagsMap = {
+        default: []
+      };
+      const { paths, tags } = response.data;
 
-      promise?.then((response) => {
-        const tagsMap = {
-          default: []
-        };
-        const { paths, tags } = response.data;
+      Object.entries(paths).forEach(([path, config]) => {
+        const requestMethod = Object.keys(config)[0];
+        const requestConfig = config[requestMethod];
+        const { tags } = requestConfig;
+        const uppercaseRequestMethod = requestMethod.toUpperCase();
 
-        Object.entries(paths).forEach(([path, config]) => {
-          const requestMethod = Object.keys(config)[0];
-          const requestConfig = config[requestMethod];
-          const { tags } = requestConfig;
-          const uppercaseRequestMethod = requestMethod.toUpperCase();
+        if (tags) {
+          tags.forEach((tag) => {
+            let interfaceList = tagsMap[tag];
 
-          if (tags) {
-            tags.forEach((tag) => {
-              let interfaceList = tagsMap[tag];
-  
-              if (!interfaceList) {
-                interfaceList = tagsMap[tag] = [];
-              }
-  
-              interfaceList.push({
-                ...requestConfig,
-                path,
-                requestMethod: uppercaseRequestMethod
-              })
-            })
-          } else {
-            tagsMap["default"].push({
+            if (!interfaceList) {
+              interfaceList = tagsMap[tag] = [];
+            }
+
+            interfaceList.push({
               ...requestConfig,
               path,
               requestMethod: uppercaseRequestMethod
             })
-          }
-        })
+          })
+        } else {
+          tagsMap["default"].push({
+            ...requestConfig,
+            path,
+            requestMethod: uppercaseRequestMethod
+          })
+        }
+      })
 
-        const interfaceTags = [];
+      const interfaceTags = [];
+      if (tags) {
         tags.forEach(({ name: tag, description: title }) => {
           const interfaceList = tagsMap[tag];
           if (interfaceList) {
@@ -99,46 +199,39 @@ export default ({
           }
           Reflect.deleteProperty(tagsMap, tag);
         })
+      }
 
-        Object.entries(tagsMap).forEach(([tag, interfaceList]) => {
-          if (interfaceList.length) {
-            interfaceTags.push({
-              tag,
-              interfaceList
-            })
-          }
-        })
-
-        setInterfaceList(interfaceTags);
+      Object.entries(tagsMap).forEach(([tag, interfaceList]) => {
+        if (interfaceList.length) {
+          interfaceTags.push({
+            tag,
+            interfaceList
+          })
+        }
       })
+
+      setInterfaceList(interfaceTags);
+    })
+  }
+
+  useEffect(() => {
+    if (projectId) {
+      getInterfaceList(projectId)
     }
   }, [projectId])
 
   // 获取项目列表
-  const getProjectList = async () => {
-    const { nocobase } = globalConfig;
-    // const url = (process.env.NODE_ENV === "development" ? "" : nocobase.url.replace(/\/$/, "")) + "/api/swagger:getUrls"
-    const url = nocobase.url.replace(/\/$/, "") + "/api/swagger:getUrls";
-
+  const getProjectList = async (app) => {
     try {
-      let nocobaseUrls = [];
-
-      if (nocobase.useProxy && httpRegExp.test(url) && url.match(/^https?:\/\/([^/#&?])+/g)?.[0] !== location.origin) {
-        const response = await axios.get("/paas/api/proxy", {
-          headers: {
-            Authorization: `Bearer ${nocobase.token}`,
-            ["x-target-url"]: url,
-          }
-        })
-        nocobaseUrls = response.data.data;
-      } else {
-        const response = await axios.get(url, {
-          headers: {
-            Authorization: `Bearer ${nocobase.token}`
-          }
-        })
-        nocobaseUrls = response.data.data;
-      }
+      const nocobaseUrls = (await fetchNocoBaseData(
+        globalConfig.nocobase,
+        {
+          pathname: "/api/swagger:getUrls",
+          headers: app ? {
+            "X-app": app
+          } : null
+        }
+      )).data.data;
   
       let defaultProjectId = null;
   
@@ -155,7 +248,7 @@ export default ({
       setProjectIdFn(defaultProjectId)
     } catch (error) {
       console.error(error);
-      message.warning(`请正确填写nocobase相关配置: ${error.message}`)
+      message.warning(`请检查当前应用是否未开启“API 文档”插件: ${error.message}`)
     }
   }
 
@@ -196,6 +289,16 @@ export default ({
             </Button>
           </div>
           <div>
+            <div>应用</div>
+            <Select
+              value={app}
+              style={{ width: "80%", marginTop: 12}}
+              className="wd-full"
+              options={appList}
+              onChange={handleAppChange}
+            ></Select>
+          </div>
+          <div>
             <div>选择端点</div>
             <Select
               value={projectId}
@@ -210,7 +313,7 @@ export default ({
             <div>
               {interfaceList.map(({ tag, title, interfaceList}) => {
                 return (
-                  <Collapse header={tag}>
+                  <Collapse header={tag} key={tag}>
                     {interfaceList.map((interfaceItem) => {
                       const { requestMethod, path, description } = interfaceItem;
                       return (
